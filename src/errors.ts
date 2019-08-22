@@ -73,7 +73,7 @@ export function CantDecodeTransactionError() {
 }
 
 export function DestinationDoesNotExistError(destination: string) {
-	return BadRequestError(CODES.BadRequest.DestinationDoesNotExistError, `Transaction ${destination} was not found`);
+	return BadRequestError(CODES.BadRequest.DestinationDoesNotExistError, `Transaction '${destination}' was not found`);
 }
 
 export function LowBalanceError() {
@@ -81,13 +81,13 @@ export function LowBalanceError() {
 }
 
 export function DestinationExistsError(destination: string) {
-	return BadRequestError(CODES.BadRequest.DestinationExistsError, `Destination ${destination} already exists`);
+	return BadRequestError(CODES.BadRequest.DestinationExistsError, `Destination '${destination}' already exists`);
 }
 
 export function AccountNotFoundError(accountId: string) {
-	return NotFoundError(CODES.NotFound.AccountNotFoundError, `Account ${accountId} was not found`);
+	return NotFoundError(CODES.NotFound.AccountNotFoundError, `Account '${accountId}' was not found`);
 }
 
 export function TransactionNotFoundError(transaction: string) {
-	return NotFoundError(CODES.NotFound.TransactionNotFoundError, `Transaction ${transaction} was not found`);
+	return NotFoundError(CODES.NotFound.TransactionNotFoundError, `Transaction '${transaction}' was not found`);
 }
