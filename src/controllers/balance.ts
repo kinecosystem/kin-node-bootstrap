@@ -1,4 +1,4 @@
-import {getBalanceService} from '../services/balance';
+import {BalanceRes, getBalanceService} from '../services/balance';
 import {KinClient} from "@kinecosystem/kin-sdk-node";
 
 export type GetBalance = Request & {
@@ -8,9 +8,9 @@ export type GetBalance = Request & {
 };
 
 /**
- * Get a status of the account
- * @returns {string}
+ * Get the balance of the requested account
+ * @returns {BalanceRes}
  */
-export async function getBalance(client: KinClient, address: string): Promise<string> {
+export async function getBalance(client: KinClient, address: string): Promise<BalanceRes> {
 	return await getBalanceService(client, address);
 }

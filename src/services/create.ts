@@ -2,13 +2,17 @@ import {KinAccount, KinClient, LowBalanceError as KinLowBalanceError, AccountExi
 import {Create} from "../controllers/create";
 import {DestinationExistsError, InvalidTransactionError, LowBalanceError} from "../errors";
 
-export async function createService(client: KinClient, account: KinAccount, params: Create): Promise<string> {
+export type CreateRes = {
+	tx_id: string
+}
+
+export async function createAccountService(client: KinClient, account: KinAccount, params: Create): Promise<CreateRes> {
 	let transactionId: string;
 	try {
 		const fee = await client.getMinimumFee();
 		const builder = await account.buildCreateAccount({
 			address: params.destination,
-			startingBalance: params.startingBalance,
+			startingBalance: params.starting_balance,
 			fee: fee,
 			memoText: params.memo
 		});
@@ -20,6 +24,6 @@ export async function createService(client: KinClient, account: KinAccount, para
 			throw DestinationExistsError(params.destination);
 		} else throw InvalidTransactionError();
 	}
-	return JSON.stringify({ tx_id: transactionId});
+	return { tx_id: transactionId};
 }
 

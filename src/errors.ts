@@ -21,10 +21,13 @@ const CODES = {
 		InvalidTransactionError: 4,
 		CantDecodeTransactionError: 5,
 		DestinationExistsError: 9
+	},
+	ServerError: {
+		InternalServerError: 0
 	}
 };
 
-export class KinSdkError extends Error {
+export class KinBootstrapError extends Error {
 	public readonly title: string;
 	public readonly status: number; // http status code
 	public readonly http_code: number; // external codes
@@ -52,12 +55,20 @@ export class KinSdkError extends Error {
 	}
 }
 
+function ServerError(index: number, message: string) {
+	return new KinBootstrapError(500, index, "Internal Server Error", message);
+}
+
+export function InternalServerError() {
+	return ServerError(CODES.ServerError.InternalServerError, "Something went wrong");
+}
+
 function BadRequestError(index: number, message: string) {
-	return new KinSdkError(400, index, "Bad Request", message);
+	return new KinBootstrapError(400, index, "Bad Request", message);
 }
 
 function NotFoundError(index: number, message: string) {
-	return new KinSdkError(404, index, "Not Found", message);
+	return new KinBootstrapError(404, index, "Not Found", message);
 }
 
 export function InvalidParamError(message: string) {

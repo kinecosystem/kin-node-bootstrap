@@ -1,5 +1,5 @@
 import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {payService} from "../services/pay";
+import {PayRes, payService} from "../services/pay";
 
 export type Pay = Request &  {
 		destination: string,
@@ -8,9 +8,9 @@ export type Pay = Request &  {
 	};
 
 /**
- * Get a status of the account
- * @returns {string}
+ * Transfer kins to another account
+ * @returns {PayRes}
  */
-export async function pay(client: KinClient, account: KinAccount, params: Pay): Promise<string> {
+export async function pay(client: KinClient, account: KinAccount, params: Pay): Promise<PayRes> {
 	return await payService(client, account, params);
 }

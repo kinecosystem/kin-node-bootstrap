@@ -3,7 +3,11 @@ import {Pay} from "../controllers/pay";
 import {AccountNotFoundError} from "@kinecosystem/kin-sdk-node/scripts/bin/errors";
 import {DestinationDoesNotExistError, InvalidTransactionError, LowBalanceError} from "../errors";
 
-export async function payService(client: KinClient, account: KinAccount, params: Pay): Promise<string> {
+export type PayRes = {
+	tx_id: string
+}
+
+export async function payService(client: KinClient, account: KinAccount, params: Pay): Promise<PayRes> {
 	const fee = await client.getMinimumFee();
 	let transactionId: string;
 	try {
@@ -21,5 +25,5 @@ export async function payService(client: KinClient, account: KinAccount, params:
 			throw LowBalanceError();
 		} else throw InvalidTransactionError();
 	}
-	return JSON.stringify({ tx_id: transactionId});
+	return { tx_id: transactionId};
 }

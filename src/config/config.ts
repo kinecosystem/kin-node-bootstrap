@@ -1,12 +1,13 @@
 import {Environment} from "@kinecosystem/kin-sdk-node";
+import {Network} from "@kinecosystem/kin-sdk";
 
 require('dotenv').config();
-const kin = require('@kinecosystem/kin-sdk-node');
 
 const pjson = require('pjson');
 export const DEVELOPMENT: string = 'DEVELOPMENT';
 export const VERSION: any = pjson.version;
-export const MEMO_CAP: number = 28;
+export const MEMO_CAP: number = 21;
+export const ANON_APP_ID: string = "anon";
 export const MEMO_TEMPLATE:string = '1-{}-';
 
 // To override the configurations, use the '.env' file in the root directory.
@@ -14,7 +15,7 @@ export const config: ConfigParams = {
 	// SEED: process.env.SEED || 'SCOMIY6IHXNIL6ZFTBBYDLU65VONYWI3Y6EN4IDWDP2IIYTCYZBCCE6C',
 	// whitelisted account =>
 	SEED: process.env.SEED || 'SDH76EUIJRM4LARRAOWPBGEAWJMRXFUDCFNBEBMMIO74AWB3MZJYGJ4J',
-	APP_ID: process.env.APP_ID || kin.Environment.ANON_APP_ID,
+	APP_ID: process.env.APP_ID || ANON_APP_ID,
 	CHANNEL_COUNT: parseInt(process.env.CHANNEL_COUNT? process.env.CHANNEL_COUNT : '100'),
 	CHANNEL_SALT: process.env.CHANNEL_SALT || 'bootstrap',
 	CHANNEL_STARTING_BALANCE: parseInt(process.env.CHANNEL_STARTING_BALANCE? process.env.CHANNEL_STARTING_BALANCE : '1'),
@@ -25,41 +26,14 @@ export const config: ConfigParams = {
 };
 
 export interface ConfigParams {
-	/**
-	 * Source account privte address to sign transactions.
-	 */
 	SEED: string;
-	/**
-	 * Application's ID.
-	 */
 	APP_ID: string;
-	/**
-	 * Channels number to allocate.
-	 */
 	CHANNEL_COUNT: number;
-	/**
-	 * Channels generator's passphrase .
-	 */
 	CHANNEL_SALT: string;
-	/**
-	 * Channels starting balance.
-	 */
 	CHANNEL_STARTING_BALANCE: number;
-	/**
-	 * Server's port.
-	 */
 	PORT: number;
-	/**
-	 * Default log level.
-	 */
 	LOG_LEVEL: string;
-	/**
-	 * Default console log level.
-	 */
 	CONSOLE_LEVEL: string;
-	/**
-	 * Node environment status.
-	 */
 	NODE_ENV: string;
 }
 

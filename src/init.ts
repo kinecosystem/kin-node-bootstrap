@@ -7,7 +7,7 @@ export function getKinClient(): KinClient {
 
 export async function getKinAccount(client: KinClient): Promise<KinAccount> {
 	const keyPairs = await Channels.createChannels({
-			environment: Environment.Testnet,
+			environment: INTEGRATION_ENVIRONMENT,
 			baseSeed: config.SEED,
 			salt: config.CHANNEL_SALT,
 			channelsCount: config.CHANNEL_COUNT,

@@ -1,5 +1,5 @@
 import {KinClient} from "@kinecosystem/kin-sdk-node";
-import {payService} from "../services/payment";
+import {PaymentRes, paymentService} from "../services/payment";
 
 export type GetPayment = Request & {
 	params: {
@@ -8,9 +8,9 @@ export type GetPayment = Request & {
 };
 
 /**
- * Get a status of the account
- * @returns {string}
+ * Get a status of a payment by transaction's hash
+ * @returns {PaymentRes}
  */
-export async function getPayment(client: KinClient, hash: string): Promise<string> {
-	return await payService(client, hash);
+export async function getPayment(client: KinClient, hash: string): Promise<PaymentRes> {
+	return await paymentService(client, hash);
 }

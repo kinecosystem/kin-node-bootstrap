@@ -43,7 +43,7 @@ export function payValidator(req: any, res: any, next: any) {
 }
 
 export const payRequest = [
-	check('destination').isLength({min: 56}).custom((destination: string) => {
+	check('destination').custom((destination: string) => {
 		if (!StrKey.isValidEd25519PublicKey(destination)) {
 			throw new Error();
 		}

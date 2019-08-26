@@ -1,5 +1,5 @@
 import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {whitelistService} from "../services/whitelist";
+import {WhitelistRes, whitelistService} from "../services/whitelist";
 
 export type Whitelist= Request &  {
 		envelope: string,
@@ -7,9 +7,9 @@ export type Whitelist= Request &  {
 	};
 
 /**
- * Get a status of the account
- * @returns {string}
+ * Sign a transaction with a whitelisted account
+ * @returns {WhitelistRes}
  */
-export async function whitelist(client: KinClient, account: KinAccount, params: Whitelist): Promise<string> {
-	return await whitelistService(client, account, params);
+export async function whitelist(client: KinClient, account: KinAccount, params: Whitelist): Promise<WhitelistRes> {
+	return await whitelistService(account, params);
 }

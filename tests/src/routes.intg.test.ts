@@ -2,7 +2,6 @@ import {createApp} from "../../src/app";
 import {KeyPair, KinAccount} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount, getKinClient} from "../../src/init";
 import {config, INTEGRATION_ENVIRONMENT, VERSION} from "../../src/config/config";
-import {AccountNotFoundError} from "../../src/errors";
 
 const request = require('supertest');
 
@@ -26,7 +25,7 @@ describe('Test routes', () => {
 
 		const response = await request(app).get('/status');
 		const text = JSON.parse(response.text);
-		const data = JSON.parse(text);
+		const data = text;
 
 		expect(data.service_version).toBe(VERSION);
 		expect(data.horizon).toBe(INTEGRATION_ENVIRONMENT.url);
@@ -39,7 +38,7 @@ describe('Test routes', () => {
 	test('Get Balance - successful', async () => {
 		const balance = await account.getBalance();
 		const response = await request(app).get(`/balance/${account.publicAddress}`);
-		expect(JSON.parse(response.body).balance).toBe(balance);
+		expect(response.body.balance).toBe(balance);
 	}, 12000);
 
 	// test('Get Balance - account not found', async () => {

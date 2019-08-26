@@ -3,10 +3,8 @@ import 'express-async-errors'; // handle async/await errors in middleware
 
 const express = require('express');
 const createError = require('http-errors');
-const path = require('path');
 const morgan = require('morgan');
 const winston = require('./config/winston');
-const helmet = require('helmet');
 const compression = require('compression');
 const responseTime = require('response-time');
 const indexRouter = require('./routes/index');
@@ -15,13 +13,9 @@ export async function createApp() {
 	const app = express();
 	const client = getKinClient();
 	const account = await getKinAccount(client);
-	// view engine setup
-	app.set('views', path.join(__dirname, 'views'));
-	app.set('view engine', 'jade');
 
 	app.use(express.json());
 	app.use(express.urlencoded({extended: true}));
-	app.use(helmet());
 	app.use(compression());
 
 	app.use(responseTime());
