@@ -3,8 +3,9 @@ import {Environment} from "@kinecosystem/kin-sdk-node";
 require('dotenv').config();
 const kin = require('@kinecosystem/kin-sdk-node');
 
+const pjson = require('pjson');
 export const DEVELOPMENT: string = 'DEVELOPMENT';
-export const VERSION: string = '1.0.0';
+export const VERSION: any = pjson.version;
 export const MEMO_CAP: number = 28;
 export const MEMO_TEMPLATE:string = '1-{}-';
 

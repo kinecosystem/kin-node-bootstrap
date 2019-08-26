@@ -1,15 +1,20 @@
 {
   "name": "kin-node-bootstrap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run build:live",
-    "build": "tsc -p .",
-    "build:live": "nodemon --watch 'routes/**/*.ts' --watch 'controllers/**/*.ts' --watch 'services/**/*.ts' --exec 'ts-node' app.ts"
+    "prod": "npm-run-all build start",
+    "start": "node lib/server",
+    "start:live": "npm run build:live",
+    "build": "tsc -p ./src",
+    "build:live": "nodemon --watch 'src/routes/**/*.ts' --watch 'src/controllers/**/*.ts' --watch 'src/services/**/*.ts' --exec 'ts-node' src/server.ts",
+    "build:tests": "tsc -p ./tests",
+    "jest": "jest --forceExit --runInBand --detectOpenHandles --coverage "
   },
   "dependencies": {
     "@hapi/joi": "^15.1.0",
     "@kinecosystem/kin-sdk-node": "^0.9.4",
+    "@types/jest": "^24.0.18",
     "app-root-path": "^2.2.1",
     "compression": "^1.7.4",
     "config": "^3.2.2",
@@ -17,12 +22,13 @@
     "dotenv": "^8.0.0",
     "express": "~4.16.1",
     "express-async-errors": "^3.1.1",
-    "express-serve-static-core": "^0.1.1",
     "express-validator": "^6.1.1",
     "helmet": "^3.20.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "^1.9.1",
+    "path": "^0.12.7",
+    "pjson": "^1.0.9",
     "pug": "2.0.0-beta11",
     "response-time": "^2.3.2",
     "winston": "^3.2.1"
@@ -31,11 +37,35 @@
   "devDependencies": {
     "@types/express": "^4.17.1",
     "@types/node": "^12.7.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^24.9.0",
+    "npm-run-all": "^4.1.5",
+    "superagent": "^5.1.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/tests/src/**.ts"
+    ],
+    "testPathIgnorePatterns": [
+      ".d.ts"
+    ]
+  }
 }

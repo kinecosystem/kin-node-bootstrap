@@ -1,6 +1,5 @@
 import {getKinAccount, getKinClient} from './init';
 import 'express-async-errors'; // handle async/await errors in middleware
-export {};
 
 const express = require('express');
 const createError = require('http-errors');
@@ -12,10 +11,10 @@ const compression = require('compression');
 const responseTime = require('response-time');
 const indexRouter = require('./routes/index');
 
-const app = express();
-
-const client = getKinClient();
-exports.appPromise = getKinAccount(client).then((account: any) => {
+export async function createApp() {
+	const app = express();
+	const client = getKinClient();
+	const account = await getKinAccount(client);
 	// view engine setup
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'jade');
@@ -24,12 +23,11 @@ exports.appPromise = getKinAccount(client).then((account: any) => {
 	app.use(express.urlencoded({extended: true}));
 	app.use(helmet());
 	app.use(compression());
-	app.use(express.static(path.join(__dirname, 'public')));
 
 	app.use(responseTime());
 	app.use(morgan('combined', {stream: winston.stream}));
 
-	app.use('/', indexRouter(client, account));
+	app.use('', indexRouter(client, account));
 
 	// catch 404 and forward to error handler
 	app.use(function (req: any, res: any, next: any) {
@@ -50,7 +48,6 @@ exports.appPromise = getKinAccount(client).then((account: any) => {
 		res.render('error');
 	});
 
-	const port = process.env.PORT || 3000;
-	app.listen(port, () => console.log(`Listening on port ${port}...`));
+	return app;
+}
 
-});
