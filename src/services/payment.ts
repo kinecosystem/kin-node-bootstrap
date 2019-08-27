@@ -1,5 +1,5 @@
 import {PaymentTransaction, KinClient, ResourceNotFoundError} from "@kinecosystem/kin-sdk-node";
-import {InvalidTransactionError, TransactionNotFoundError, InternalServerError} from "../errors";
+import {InvalidTransactionError, TransactionNotFoundError} from "../errors";
 import {Transaction} from "@kinecosystem/kin-sdk-node/scripts/src/blockchain/horizonModels";
 
 export type PaymentRes = {
@@ -19,7 +19,7 @@ export async function paymentService(client: KinClient, hash: string): Promise<P
 		if (e instanceof ResourceNotFoundError) {
 			throw TransactionNotFoundError(hash);
 		} else {
-			throw InternalServerError();
+			throw e;
 		}
 	}
 

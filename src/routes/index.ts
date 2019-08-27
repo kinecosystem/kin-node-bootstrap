@@ -29,7 +29,7 @@ const routerHandler = (promise: any, params: any) => async (req: any, res: any, 
 	}
 };
 
-module.exports = function(client: KinClient, account: KinAccount): Promise<core.Router> {
+export function indexRouter(client: KinClient, account: KinAccount): Promise<core.Router> {
 	const router = express.Router();
 	router
 		.get('/status', routerHandler(getStatus,(req: any, res: any, next: any) => [client, account]))
@@ -40,3 +40,4 @@ module.exports = function(client: KinClient, account: KinAccount): Promise<core.
 		.post('/whitelist', routerHandler(whitelist, (req: Pay, res: any, next: any) => [account, (req as any).body]));
 	return router;
 }
+

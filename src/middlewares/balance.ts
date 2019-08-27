@@ -1,4 +1,5 @@
 import {InvalidParamError} from "../errors";
+import {StrKey} from "@kinecosystem/kin-sdk";
 
 const {check, validationResult} = require('express-validator');
 
@@ -16,4 +17,11 @@ export function balanceValidator(req: any, res: any, next: any) {
 	next();
 }
 // without decode check
-export const balanceRequest = [check('address').isLength({min: 56})];
+export const balanceRequest = [
+	check('address').custom((address: string) => {
+		if (!StrKey.isValidEd25519PublicKey(address)) {
+			throw new Error();
+		}
+		return true;
+	})
+];

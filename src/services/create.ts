@@ -22,7 +22,9 @@ export async function createAccountService(client: KinClient, account: KinAccoun
 			throw LowBalanceError();
 		} else if (e instanceof KinAccountExistsError) {
 			throw DestinationExistsError(params.destination);
-		} else throw InvalidTransactionError();
+		} else {
+			throw e;
+		}
 	}
 	return { tx_id: transactionId};
 }

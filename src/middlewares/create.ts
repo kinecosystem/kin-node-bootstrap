@@ -1,5 +1,5 @@
 import {InvalidParamError} from "../errors";
-import {MEMO_CAP} from "../config/config";
+import {MEMO_CAP} from "../config/environment";
 import {StrKey} from "@kinecosystem/kin-sdk";
 
 const {check, validationResult} = require('express-validator');
@@ -15,22 +15,22 @@ export function createValidator(req: any, res: any, next: any) {
 
 	if (!errors.isEmpty()) {
 		const error = errors.errors[0];
-		let msg = error.msg;
+		let message = error.msg;
 		const value = error.value;
 		switch (errors.errors[0].param) {
 			case Errors.DESTINATION:
-				msg = `Destination '${value}' is not a valid public address`;
+				message = `Destination '${value}' is not a valid public address`;
 				break;
 			case Errors.STARTING_BALANCE:
-				msg = 'Starting balance for account creation must not be negative';
+				message = 'Starting balance for account creation must not be negative';
 				break;
 			case Errors.MEMO:
-				msg = `Memo: '${value}' is longer than ${MEMO_CAP}`;
+				message = `Memo: '${value}' is longer than ${MEMO_CAP}`;
 				break;
 			default:
 				break;
 		}
-		const selectedError = InvalidParamError(msg);
+		const selectedError = InvalidParamError(message);
 		return res.json({
 			http_code: selectedError.http_code,
 			code: selectedError.code,

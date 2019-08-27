@@ -1,18 +1,26 @@
 import {Channels, Environment, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {config, INTEGRATION_ENVIRONMENT} from "./config/config";
 
-export function getKinClient(): KinClient {
-	return new KinClient(INTEGRATION_ENVIRONMENT);
+function getNetworkEnv(config: any): Environment {
+	return new Environment(
+		{
+			url: config.HORIZON_ENDPOINT,
+			passphrase: config.NETWORK_PASSPHRASE,
+			name: config.NETWORK_NAME
+		});
 }
 
-export async function getKinAccount(client: KinClient): Promise<KinAccount> {
+export function getKinClient(config: any): KinClient {
+	return new KinClient(getNetworkEnv(config));
+}
+
+export async function getKinAccount(client: KinClient, config: any): Promise<KinAccount> {
 	const keyPairs = await Channels.createChannels({
-			environment: INTEGRATION_ENVIRONMENT,
-			baseSeed: config.SEED,
-			salt: config.CHANNEL_SALT,
-			channelsCount: config.CHANNEL_COUNT,
-			startingBalance: config.CHANNEL_STARTING_BALANCE
-		});
+		environment: getNetworkEnv(config),
+		baseSeed: config.SEED,
+		salt: config.CHANNEL_SALT,
+		channelsCount: config.CHANNEL_COUNT,
+		startingBalance: config.CHANNEL_STARTING_BALANCE
+	});
 	return client.createKinAccount({
 		channelSecretKeys: keyPairs.map(keyPair => {
 			return keyPair.seed;

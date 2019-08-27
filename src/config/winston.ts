@@ -1,4 +1,4 @@
-import {config} from "./config";
+import {config} from "./environment";
 const appRoot = require('app-root-path');
 const winston = require('winston');
 

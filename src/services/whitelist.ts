@@ -16,7 +16,7 @@ export async function whitelistService(whitelistedAccount: KinAccount, params: W
 	} catch (e) {
 		if (e instanceof NetworkError) {
 			throw InvalidParamError(`The network id sent in the request doesn't match the network the server is configured with`);
-		} else throw CantDecodeTransactionError();
+		} else throw CantDecodeTransactionError(e);
 	}
 	return { tx_envelope: whiteTransaction};
 }

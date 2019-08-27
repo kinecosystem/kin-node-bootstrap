@@ -21,9 +21,6 @@ const CODES = {
 		InvalidTransactionError: 4,
 		CantDecodeTransactionError: 5,
 		DestinationExistsError: 9
-	},
-	ServerError: {
-		InternalServerError: 0
 	}
 };
 
@@ -55,14 +52,6 @@ export class KinBootstrapError extends Error {
 	}
 }
 
-function ServerError(index: number, message: string) {
-	return new KinBootstrapError(500, index, "Internal Server Error", message);
-}
-
-export function InternalServerError() {
-	return ServerError(CODES.ServerError.InternalServerError, "Something went wrong");
-}
-
 function BadRequestError(index: number, message: string) {
 	return new KinBootstrapError(400, index, "Bad Request", message);
 }
@@ -79,8 +68,8 @@ export function InvalidTransactionError() {
 	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The specified transaction was not a valid kin payment transaction');
 }
 
-export function CantDecodeTransactionError() {
-	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received transaction envelope');
+export function CantDecodeTransactionError(error: Error) {
+	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received transaction envelope. ERROR: ' + error.message);
 }
 
 export function DestinationDoesNotExistError(destination: string) {

@@ -1,5 +1,5 @@
 import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {VERSION} from "../config/config";
+import {VERSION} from "../config/environment";
 
 export type StatusRes = {
 		service_version: string,

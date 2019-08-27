@@ -19,11 +19,13 @@ export async function payService(client: KinClient, account: KinAccount, params:
 		});
 		transactionId = await account.submitTransaction(builder);
 	} catch (e) {
-		if (e instanceof AccountNotFoundError) {
+		if (e.type === 'ResourceNotFoundError') {
 			throw DestinationDoesNotExistError(params.destination);
 		} else if (e instanceof KinLowBalanceError) {
 			throw LowBalanceError();
-		} else throw InvalidTransactionError();
+		} else {
+			throw e;
+		}
 	}
 	return { tx_id: transactionId};
 }
