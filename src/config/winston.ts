@@ -10,7 +10,7 @@ const options = {
 		json: true,
 		maxsize: 5242880, // 5MB
 		maxFiles: 5,
-		colorize: true,
+		colorize: true,// add timer
 	},
 	console: {
 		level: config.CONSOLE_LEVEL.toLocaleLowerCase(),

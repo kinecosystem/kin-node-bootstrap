@@ -8,11 +8,7 @@ export function balanceValidator(req: any, res: any, next: any) {
 	if (!errors.isEmpty()) {
 		const value =  errors && errors.errors[0] ? errors.errors[0].value : '';
 		const selectedError = InvalidParamError(`Transaction hash '${value}' is not a valid transaction hash`);
-		return res.json({
-			http_code: selectedError.http_code,
-			code: selectedError.code,
-			message: selectedError.message
-		});
+		return res.status(selectedError.status).json(selectedError);
 	}
 	next();
 }

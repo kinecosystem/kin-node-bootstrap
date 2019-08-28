@@ -1,6 +1,7 @@
 import {getKinAccount, getKinClient} from './init';
 import 'express-async-errors'; // handle async/await errors in middleware
 import {config} from "./config/environment";
+import {generalErrorHandler, notFoundHandler} from "./middlewares";
 
 const express = require('express');
 const createError = require('http-errors');
@@ -36,17 +37,11 @@ export async function createApp() {
 		res.locals.error = req.app.get('env') === 'development' ? err : {};
 
 		// add this line to include winston logging
-		// winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+		winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
 
 		// render the error page
 		res.status(err.status || 500);
 	});
-
-	// TODO: for the reviewer, please skip these comments. will be changed later on.
-	// https://github.com/kinecosystem/marketplace-server/blob/master/scripts/src/middleware.ts#L78
-	// notFoundHandler (73)
-	// generalErrorHandler (80)
-	// clientErrorHandler (91)
 	return app;
 }
 

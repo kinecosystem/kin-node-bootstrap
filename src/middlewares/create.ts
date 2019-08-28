@@ -31,13 +31,7 @@ export function createValidator(req: any, res: any, next: any) {
 				break;
 		}
 		const selectedError = InvalidParamError(message);
-		return res.json({
-			http_code: selectedError.http_code,
-			code: selectedError.code,
-			title: selectedError.title,
-			status: selectedError.status,
-			message: selectedError.message
-		});
+		return res.status(selectedError.status).json(selectedError);
 	}
 	next();
 }
