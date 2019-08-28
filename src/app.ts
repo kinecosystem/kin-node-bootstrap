@@ -8,8 +8,8 @@ const createError = require('http-errors');
 const morgan = require('morgan');
 const winston = require('./config/winston');
 const compression = require('compression');
-const responseTime = require('response-time');
 const indexRouter = require('./routes/index').indexRouter;
+const addRequestId = require('express-request-id')();
 
 export async function createApp() {
 	const app = express();
@@ -20,9 +20,9 @@ export async function createApp() {
 	app.use(express.urlencoded({extended: true}));
 	app.use(compression());
 
-	app.use(responseTime());
 	app.use(morgan('combined', {stream: winston.stream}));
 
+	app.use(addRequestId);
 	app.use('', indexRouter(client, account));
 
 	// catch 404 and forward to error handler

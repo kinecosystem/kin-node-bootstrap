@@ -32,12 +32,16 @@ const routerHandler = (promise: any, params: any) => async (req: any, res: any, 
 export function indexRouter(client: KinClient, account: KinAccount): Promise<core.Router> {
 	const router = express.Router();
 	router
-		.get('/status', routerHandler(getStatus,(req: any, res: any, next: any) => [client, account]))
-		.get('/payment/:hash', PaymentRequest, paymentValidator, routerHandler(getPayment, (req: GetPayment, res: any, next: any) => [client, req.params.hash]))
-		.get('/balance/:address', balanceRequest, balanceValidator, routerHandler(getBalance, (req: GetBalance, res: any, next: any) => [client, req.params.address]))
-		.post('/create', createRequest, createValidator, routerHandler(create, (req: Create, res: any, next: any) => [client, account, (req as any).body]))
-		.post('/pay', payRequest, payValidator, routerHandler(pay, (req: Pay, res: any, next: any) => [client, account, (req as any).body]))
-		.post('/whitelist', routerHandler(whitelist, (req: Pay, res: any, next: any) => [account, (req as any).body]));
+		.get('/status', routerHandler(getStatus,(req: any, res: any, next: any) => [client, account]), request)
+		.get('/payment/:hash', PaymentRequest, paymentValidator, routerHandler(getPayment, (req: GetPayment, res: any, next: any) => [client, req.params.hash]), request)
+		.get('/balance/:address', balanceRequest, balanceValidator, routerHandler(getBalance, (req: GetBalance, res: any, next: any) => [client, req.params.address]), request)
+		.post('/create', createRequest, createValidator, routerHandler(create, (req: Create, res: any, next: any) => [client, account, (req as any).body]), request)
+		.post('/pay', payRequest, payValidator, routerHandler(pay, (req: Pay, res: any, next: any) => [client, account, (req as any).body]), request)
+		.post('/whitelist', routerHandler(whitelist, (req: Pay, res: any, next: any) => [account, (req as any).body]), request);
 	return router;
 }
 
+function request(req: any, res: any, next: any) {
+	res.send(req.id);
+	next();
+}
