@@ -1,5 +1,9 @@
 import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {CreateRes, createAccountService} from "../services/create";
+import {createAccountService} from "../services/create";
+
+export type CreateRes = {
+	tx_id: string
+}
 
 export declare type Create = Request & {
 	destination: string,
@@ -13,5 +17,6 @@ export declare type Create = Request & {
  * @returns {CreateRes}
  */
 export async function create(client: KinClient, account: KinAccount, params: Create): Promise<CreateRes> {
-	return await createAccountService(client, account, params);
+	const transactionId = await createAccountService(client, account, params);
+	return { tx_id: transactionId};
 }

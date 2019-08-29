@@ -1,5 +1,9 @@
 import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
-import {PayRes, payService} from "../services/pay";
+import {payService} from "../services/pay";
+
+export type PayRes = {
+	tx_id: string
+}
 
 export type Pay = Request &  {
 		destination: string,
@@ -12,5 +16,6 @@ export type Pay = Request &  {
  * @returns {PayRes}
  */
 export async function pay(client: KinClient, account: KinAccount, params: Pay): Promise<PayRes> {
-	return await payService(client, account, params);
+	const transactionId = await payService(client, account, params);
+	return { tx_id: transactionId};
 }

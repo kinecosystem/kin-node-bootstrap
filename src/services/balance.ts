@@ -1,14 +1,9 @@
 import {KinClient} from "@kinecosystem/kin-sdk-node";
 import {AccountNotFoundError} from "../errors";
 
-export type BalanceRes = {
-	balance: number
-}
-
-export async function getBalanceService(client: KinClient, address: string): Promise<BalanceRes> {
-	let balance = undefined;
+export async function getBalanceService(client: KinClient, address: string): Promise<number> {
 	try {
-		balance = await client.getAccountBalance(address);
+		return await client.getAccountBalance(address);
 	} catch (e) {
 		if (e.type === 'ResourceNotFoundError')
 		throw AccountNotFoundError(address);
@@ -16,6 +11,5 @@ export async function getBalanceService(client: KinClient, address: string): Pro
 			throw e;
 		}
 	}
-	return { balance: balance };
 }
 

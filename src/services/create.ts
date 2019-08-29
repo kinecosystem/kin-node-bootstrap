@@ -1,13 +1,8 @@
 import {KinAccount, KinClient, LowBalanceError as KinLowBalanceError, AccountExistsError as KinAccountExistsError} from "@kinecosystem/kin-sdk-node";
 import {Create} from "../controllers/create";
-import {DestinationExistsError, InvalidTransactionError, LowBalanceError} from "../errors";
+import {DestinationExistsError, LowBalanceError} from "../errors";
 
-export type CreateRes = {
-	tx_id: string
-}
-
-export async function createAccountService(client: KinClient, account: KinAccount, params: Create): Promise<CreateRes> {
-	let transactionId: string;
+export async function createAccountService(client: KinClient, account: KinAccount, params: Create): Promise<string> {
 	try {
 		const fee = await client.getMinimumFee();
 		const builder = await account.buildCreateAccount({
@@ -16,7 +11,7 @@ export async function createAccountService(client: KinClient, account: KinAccoun
 			fee: fee,
 			memoText: params.memo
 		});
-		transactionId = await account.submitTransaction(builder);
+		return await account.submitTransaction(builder);
 	} catch (e) {
 		if (e instanceof KinLowBalanceError) {
 			throw LowBalanceError();
@@ -26,6 +21,5 @@ export async function createAccountService(client: KinClient, account: KinAccoun
 			throw e;
 		}
 	}
-	return { tx_id: transactionId};
 }
 

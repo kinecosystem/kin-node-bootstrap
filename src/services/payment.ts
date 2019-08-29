@@ -1,20 +1,9 @@
 import {PaymentTransaction, KinClient, ResourceNotFoundError} from "@kinecosystem/kin-sdk-node";
-import {InvalidTransactionError, TransactionNotFoundError} from "../errors";
-import {Transaction} from "@kinecosystem/kin-sdk-node/scripts/src/blockchain/horizonModels";
+import {TransactionNotFoundError} from "../errors";
 
-export type PaymentRes = {
-		source: string,
-		destination: string,
-		amount: number,
-		memo?: string,
-		timestamp: number
-	}
-
-export async function paymentService(client: KinClient, hash: string): Promise<PaymentRes> {
-
-	let data: Transaction;
+export async function paymentService(client: KinClient, hash: string): Promise<any> {
 	try {
-		data = <PaymentTransaction> await client.getTransactionData(hash);
+		return <PaymentTransaction> await client.getTransactionData(hash);
 	} catch (e) {
 		if (e instanceof ResourceNotFoundError) {
 			throw TransactionNotFoundError(hash);
@@ -22,18 +11,4 @@ export async function paymentService(client: KinClient, hash: string): Promise<P
 			throw e;
 		}
 	}
-
-	if (data.type !== 'PaymentTransaction') {
-		throw InvalidTransactionError();
-	}
-
-	// Convert from '2018-11-12T06:45:40Z' to unix timestamp
-	const timestamp = Date.parse(data.timestamp ? data.timestamp : new Date().toISOString());
-	return {
-		source: data.source,
-		destination: data.destination,
-		amount: data.amount,
-		memo: data.memo,
-		timestamp: timestamp
-	};
 }

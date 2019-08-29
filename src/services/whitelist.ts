@@ -1,15 +1,10 @@
-import {KinAccount, KinClient, NetworkError} from "@kinecosystem/kin-sdk-node";
+import {KinAccount, NetworkError} from "@kinecosystem/kin-sdk-node";
 import {Whitelist} from "../controllers/whitelist";
 import {CantDecodeTransactionError, InvalidParamError} from "../errors";
 
-export type WhitelistRes = {
-	tx_envelope: string
-}
-
-export async function whitelistService(whitelistedAccount: KinAccount, params: Whitelist): Promise<WhitelistRes> {
-	let whiteTransaction;
+export async function whitelistService(whitelistedAccount: KinAccount, params: Whitelist): Promise<string> {
 	try {
-		whiteTransaction = await whitelistedAccount.whitelistTransaction({
+		return await whitelistedAccount.whitelistTransaction({
 			envelope: params.envelope,
 			networkId: params.network_id
 		});
@@ -18,5 +13,4 @@ export async function whitelistService(whitelistedAccount: KinAccount, params: W
 			throw InvalidParamError(`The network id sent in the request doesn't match the network the server is configured with`);
 		} else throw CantDecodeTransactionError(e);
 	}
-	return { tx_envelope: whiteTransaction};
 }
