@@ -144,6 +144,17 @@ describe('Test routes', () => {
 		expect(data.message).toEqual('The account does not have enough kin to perform this operation');
 	}, 120000);
 
+	test('Post Pay - missing param', async () => {
+		const response = await request(app).post('/pay').send({
+			destination: destination,
+			memo: 'pay-successful'
+		});
+
+		const data = JSON.parse(response.text);
+		expect(data).toEqual(data);
+		expect(data.message).toEqual('The parameter \'amount\' was missing from the requests body');
+	}, 120000);
+
 	test('Post Create - successful', async () => {
 		const startingBalance = 300;
 		const keypair = KeyPair.generate();

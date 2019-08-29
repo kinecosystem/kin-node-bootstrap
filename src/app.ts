@@ -1,7 +1,6 @@
 import {getKinAccount, getKinClient} from './init';
 import 'express-async-errors'; // handle async/await errors in middleware
 import {config} from "./config/environment";
-import {generalErrorHandler, notFoundHandler} from "./middlewares";
 
 const express = require('express');
 const createError = require('http-errors');
