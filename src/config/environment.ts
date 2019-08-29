@@ -35,6 +35,7 @@ export interface ConfigParams {
 	CHANNEL_COUNT: number;
 	CHANNEL_SALT: string;
 	CHANNEL_STARTING_BALANCE: number;
+	// Changing the port requires to modify the docker-compose.yml as well.
 	PORT: number;
 	LOG_LEVEL: string;
 	CONSOLE_LEVEL: string;
