@@ -1,4 +1,4 @@
-import {InvalidParamError} from "../errors";
+import {InvalidParamError, MissingParamError} from "../errors";
 import {StrKey} from "@kinecosystem/kin-sdk";
 
 const {check, validationResult} = require('express-validator');
@@ -6,8 +6,13 @@ const {check, validationResult} = require('express-validator');
 export function balanceValidator(req: any, res: any, next: any) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		const value =  errors && errors.errors[0] ? errors.errors[0].value : '';
-		const selectedError = InvalidParamError(`Transaction hash '${value}' is not a valid transaction hash`);
+		const error = errors.errors[0];
+		let selectedError;
+		if (!error.value) {
+			selectedError = MissingParamError(`The parameter '${error.param}' was missing from the requests body`);
+		} else {
+			selectedError = InvalidParamError(`Transaction hash '${error.value}' is not a valid transaction hash`);
+		}
 		return res.status(selectedError.status).json(selectedError);
 	}
 	next();
@@ -19,5 +24,5 @@ export const balanceRequest = [
 			throw new Error();
 		}
 		return true;
-	})
+	}).exists()
 ];
