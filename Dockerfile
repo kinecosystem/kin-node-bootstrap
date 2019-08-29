@@ -6,7 +6,7 @@ RUN mkdir -p /opt/bootstrap/src
 # Set the workdir
 WORKDIR /opt/bootstrap
 
-# Copy the pipfiles
+# Copy the package files
 COPY package* .env ./
 
 # Install dependencies
