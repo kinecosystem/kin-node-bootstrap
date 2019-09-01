@@ -23,6 +23,7 @@ export const config: ConfigParams = {
 	PORT: parseInt(process.env.PORT ? process.env.PORT : '3000'),
 	LOG_LEVEL: process.env.LOG_LEVEL || 'INFO',
 	CONSOLE_LEVEL: process.env.CONSOLE_LEVEL || 'SILLY',
+	ERROR_LEVEL: process.env.CONSOLE_LEVEL || 'ERROR',
 	NODE_ENV: process.env.NODE_ENV || DEVELOPMENT
 };
 
@@ -39,5 +40,6 @@ export interface ConfigParams {
 	PORT: number;
 	LOG_LEVEL: string;
 	CONSOLE_LEVEL: string;
+	ERROR_LEVEL: string;
 	NODE_ENV: string;
 }
