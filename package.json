@@ -43,7 +43,14 @@
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
-  "keywords": [],
+  "keywords": [
+    "typescript",
+    "javascript",
+    "kin",
+    "node",
+    "blockchain",
+    "cryptocurrency"
+  ],
   "author": "",
   "license": "ISC",
   "description": "",
