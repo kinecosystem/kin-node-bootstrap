@@ -8,7 +8,6 @@ export type CreateRes = {
 export declare type Create = Request & {
 	destination: string,
 	starting_balance: number,
-	fee: 100,
 	memo?: string
 };
 

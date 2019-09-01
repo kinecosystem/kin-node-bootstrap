@@ -20,6 +20,7 @@ const CODES = {
 		LowBalanceError: 3,
 		InvalidTransactionError: 4,
 		CantDecodeTransactionError: 5,
+		MissingParamError: 6,
 		DestinationExistsError: 9
 	}
 };
@@ -58,6 +59,10 @@ function BadRequestError(index: number, message: string) {
 
 function NotFoundError(index: number, message: string) {
 	return new KinBootstrapError(404, index, "Not Found", message);
+}
+
+export function MissingParamError(message: string) {
+	return BadRequestError(CODES.BadRequest.MissingParamError, message);
 }
 
 export function InvalidParamError(message: string) {
