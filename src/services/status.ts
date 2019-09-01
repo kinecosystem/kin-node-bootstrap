@@ -1,6 +1,10 @@
-import {KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
+import {KinAccount, PaymentTransaction, ResourceNotFoundError} from "@kinecosystem/kin-sdk-node";
+import {TransactionNotFoundError} from "../errors";
 
-export async function getStatusService(client: KinClient, account: KinAccount): Promise<number> {
-	return await account.getBalance();
-
+export async function getStatusService(account: KinAccount): Promise<number> {
+	try {
+		return await account.getBalance();
+	} catch (e) {
+		throw e;
+	}
 }

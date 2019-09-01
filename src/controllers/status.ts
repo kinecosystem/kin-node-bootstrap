@@ -20,7 +20,7 @@ export type StatusRes = {
  * @returns {StatusRes}
  */
 export async function getStatus(client: KinClient, account: KinAccount): Promise<StatusRes> {
-	const balance = await getStatusService(client, account);
+	const balance = await getStatusService(account);
 
 	const channelsStatus = account.channelsPool ? account.channelsPool.status : {
 		totalChannels: undefined,

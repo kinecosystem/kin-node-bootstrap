@@ -5,11 +5,12 @@ import {GetBalance, getBalance} from "../controllers/balance";
 import {GetPayment, getPayment} from "../controllers/payment";
 import {Pay, pay} from "../controllers/pay";
 import {Create, create} from "../controllers/create";
-import {whitelist} from "../controllers/whitelist";
+import {Whitelist, whitelist} from "../controllers/whitelist";
 import {PaymentRequest, paymentValidator} from "../middlewares/payment";
 import {balanceRequest, balanceValidator} from "../middlewares/balance";
 import {createRequest, createValidator} from "../middlewares/create";
 import {payRequest, payValidator} from "../middlewares/pay";
+import {WhitelistRequest, whitelistValidator} from "../middlewares/whitelist";
 
 const express = require('express');
 
@@ -37,7 +38,7 @@ export function indexRouter(client: KinClient, account: KinAccount): Promise<cor
 		.get('/balance/:address', balanceRequest, balanceValidator, routerHandler(getBalance, (req: GetBalance, res: any, next: any) => [client, req.params.address]), request)
 		.post('/create', createRequest, createValidator, routerHandler(create, (req: Create, res: any, next: any) => [client, account, (req as any).body]), request)
 		.post('/pay', payRequest, payValidator, routerHandler(pay, (req: Pay, res: any, next: any) => [client, account, (req as any).body]), request)
-		.post('/whitelist', routerHandler(whitelist, (req: Pay, res: any, next: any) => [account, (req as any).body]), request);
+		.post('/whitelist', WhitelistRequest, whitelistValidator, routerHandler(whitelist, (req: Whitelist, res: any, next: any) => [account, (req as any).body]), request);
 	return router;
 }
 

@@ -17,7 +17,6 @@ describe('Test routes', () => {
 	beforeEach(async () => {
 		app = await createApp();
 		account = await getKinAccount(client, config);
-		// await client.friendbot({address: account.publicAddress, amount: startingBalance});
 	}, 120000);
 
 	test('Get status - successful', async () => {
@@ -49,13 +48,21 @@ describe('Test routes', () => {
 	}, 120000);
 
 	test('Get Payment - successful', async () => {
-		const response = await request(app).get('/payment/5d68a90441be50285d24fcfcea7a93bd6a2fee97d3cf7a9d46c62a7c2b1ad359');
+		const amount = 150;
+		const memo = 'pay-successful';
+		const payResponse = await request(app).post('/pay').send({
+			destination: destination,
+			amount: amount,
+			memo: 'pay-successful'
+		});
+		const payData = JSON.parse(payResponse.text);
+		const response = await request(app).get(`/payment/${payData.tx_id}`);
 		const data = JSON.parse(response.text);
 		expect(data.source).toEqual('GAJCKSF6YXOS52FIIP5MWQY2NGZLCG6RDEKYACETVRA7XV72QRHUKYBJ');
 		expect(data.destination).toEqual(destination);
-		expect(data.amount).toEqual(150);
-		expect(data.memo).toEqual('1-anon-create-account');
-		expect(data.timestamp).toEqual(1566851154000);
+		expect(data.amount).toEqual(amount);
+		expect(data.memo).toEqual(`${MEMO_TEMPLATE}${memo}`);
+		expect(data.timestamp).toBeDefined();
 	}, 120000);
 
 	test('Get Payment - wrong transaction', async () => {
@@ -230,26 +237,46 @@ describe('Test routes', () => {
 			YMSopUaxM/nUIYx36BmaeYuNIhTEfol6dF5G7ufWRE1OX3mWbcAt/cxCoUz6vBUCbl9QA=`;
 		const response = await request(app).post('/whitelist').send({
 			envelope: envelope,
-			network_id: 'Kin Testnet ; December 2018'
+			network_id: INTEGRATION_ENVIRONMENT.passphrase
 		});
 		const data = JSON.parse(response.text);
-		expect(data).toBeDefined();
+		expect(data.tx_envelope).toEqual('AAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAZAAfJbkAAAABAAAAAQAAAAAAAA' +
+			'AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAAAAAAAAABhqAAAAAAAAAA' +
+			'AMkSdAIAAAAQDlwLjXrjpa/FmtpxrnrRrYbRBtVkpqgaHgy9R0gG/PpLtcuces9LLB3B8WmhqS47AlFMPg80WSD2Rv+QbJNHwi23RThAAAA' +
+			'QICXI9dNj/rnP1JVjDYMSopUaxM/nUIYx36BmaeYuNIhTEfol6dF5G7ufWRE1OX3mWbcAt/cxCoUz6vBUCbl9QD6hE9FAAAAQElek5+mPpU' +
+			'ZWb4OPG/Hn00eOiRxEHjGY9N8hJvGnpsnOkHUt1a2As64E2ORnqgFtwTzz7aRii6NTxI1FFG1HAw=');
 	}, 120000);
 
 	test('Post Whitelist - envelope is not valid', async () => {
-		const envelope = `AAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAZAAfJbkAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA
+		const envelope = `BAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAZAAfJbkAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA
 			AAAAAAAQAAAAAAAAABAAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAAAAAAAAABhqAAAAAAAAAAAIkSdAIAAAAQDlwLj
 			Xrjpa/FmtpxrnrRrYbRBtVkpqgaHgy9R0gG/PpLtcuces9LLB3B8WmhqS47AlFMPg80WSD2Rv+QbJNHwi23RThAAAAQICXI9dNj/rnP1JVjD
-			YMSopUaxM/nUIYx36BmaeYuNIhTEfol6dF5G7ufWRE1OX3mWbcAt/cxCoUz6vBUCbl9QA===`;
+			YMSopUaxM/nUIYx36BmaeYuNIhTEfol6dF5G7ufWRE1OX3mWbcAt/cxCoUz6vBUCbl9QA=`;
 		const response = await request(app).post('/whitelist').send({
 			envelope: envelope,
-			network_id: 'Kin Testnet ; December 2018'
+			network_id: INTEGRATION_ENVIRONMENT.passphrase
 		});
 		const data = JSON.parse(response.text);
 		expect(data.http_code).toEqual(400);
 		expect(data.code).toEqual(4004);
 		expect(data.title).toEqual('Bad Request');
 		expect(data.status).toEqual(400);
-		expect(data.message).toEqual('The service was unable to decode the received transaction envelope. ERROR: Cannot read property \'envelope\' of undefined');
+		expect(data.message).toEqual('The service was unable to decode the received transaction envelope. ERROR: XDR Read Error: Unknown PublicKeyType member for value 67108864');
+	}, 120000);
+
+	test('Post Whitelist - network_id does not exist', async () => {
+		const envelope = `BAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAZAAfJbkAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAQAAAAAAAAABAAAAAJalymXISxn6Cx+rKsuItEyoR+IoeCiUaSGy5yckSdAIAAAAAAAAAAAABhqAAAAAAAAAAAIkSdAIAAAAQDlwLj
+			Xrjpa/FmtpxrnrRrYbRBtVkpqgaHgy9R0gG/PpLtcuces9LLB3B8WmhqS47AlFMPg80WSD2Rv+QbJNHwi23RThAAAAQICXI9dNj/rnP1JVjD
+			YMSopUaxM/nUIYx36BmaeYuNIhTEfol6dF5G7ufWRE1OX3mWbcAt/cxCoUz6vBUCbl9QA=`;
+		const response = await request(app).post('/whitelist').send({
+			envelope: envelope
+		});
+		const data = JSON.parse(response.text);
+		expect(data.http_code).toEqual(400);
+		expect(data.code).toEqual(4006);
+		expect(data.title).toEqual('Bad Request');
+		expect(data.status).toEqual(400);
+		expect(data.message).toEqual('The parameter \'network_id\' was missing from the requests body');
 	}, 120000);
 });

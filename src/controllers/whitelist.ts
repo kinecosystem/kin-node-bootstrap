@@ -14,7 +14,7 @@ export type Whitelist= Request &  {
  * Sign a transaction with a whitelisted account
  * @returns {WhitelistRes}
  */
-export async function whitelist(client: KinClient, account: KinAccount, params: Whitelist): Promise<WhitelistRes> {
-	const transacionId = await whitelistService(account, params);
-	return { tx_envelope: transacionId};
+export async function whitelist(account: KinAccount, params: Whitelist): Promise<WhitelistRes> {
+	const transactionId = await whitelistService(account, params);
+	return { tx_envelope: transactionId};
 }
