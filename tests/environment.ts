@@ -22,8 +22,7 @@ export const config: ConfigParams = {
 	CHANNEL_STARTING_BALANCE: parseInt(process.env.CHANNEL_STARTING_BALANCE? process.env.CHANNEL_STARTING_BALANCE : '1'),
 	PORT: parseInt(process.env.PORT ? process.env.PORT : '3000'),
 	LOG_LEVEL: process.env.LOG_LEVEL || 'INFO',
-	CONSOLE_LEVEL: process.env.CONSOLE_LEVEL || 'SILLY',
-	NODE_ENV: process.env.NODE_ENV || DEVELOPMENT
+	CONSOLE_LEVEL: process.env.CONSOLE_LEVEL || 'SILLY'
 };
 
 export interface ConfigParams {
@@ -37,7 +36,6 @@ export interface ConfigParams {
 	PORT: number;
 	LOG_LEVEL: string;
 	CONSOLE_LEVEL: string;
-	NODE_ENV: string;
 }
 
 export const INTEGRATION_ENVIRONMENT = integEnv();

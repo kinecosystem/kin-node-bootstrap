@@ -1,14 +1,16 @@
 import {getKinAccount, getKinClient} from './init';
 import 'express-async-errors'; // handle async/await errors in middleware
-import {config} from "./config/environment";
+import {config, MORGAN_LOG_LEVEL} from "./config/environment";
+import {fileConf, consoleConf} from "./config/logger";
+import {generalErrorHandler, notFoundHandler} from "./middlewares";
 
 const express = require('express');
-const createError = require('http-errors');
 const morgan = require('morgan');
-const winston = require('./config/winston');
+const express_logger = require('express-logger-unique-req-id');
+
 const compression = require('compression');
 const indexRouter = require('./routes/index').indexRouter;
-const addRequestId = require('express-request-id')();
+export let logger: any;
 
 export async function createApp() {
 	const app = express();
@@ -18,29 +20,12 @@ export async function createApp() {
 	app.use(express.json());
 	app.use(express.urlencoded({extended: true}));
 	app.use(compression());
-
-	app.use(morgan('combined', {stream: winston.stream}));
-
-	app.use(addRequestId);
+	express_logger.initializeLogger(app, fileConf, consoleConf);
+	logger = express_logger.getLogger();
+	app.use(morgan(MORGAN_LOG_LEVEL, {stream: logger.stream}));
 	app.use('', indexRouter(client, account));
-
-	// catch 404 and forward to error handler
-	app.use(function (req: any, res: any, next: any) {
-		next(createError(404));
-	});
-
-	// error handler
-	app.use(function (err: any, req: any, res: any, next: any) {
-		// set locals, only providing error in development
-		res.locals.message = err.message;
-		res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-		// add this line to include winston logging
-		winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-
-		// render the error page
-		res.status(err.status || 500);
-	});
+	app.use(notFoundHandler); // catch 404
+	app.use(generalErrorHandler); // catch errors
 	return app;
 }
 

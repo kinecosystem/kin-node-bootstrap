@@ -44,7 +44,12 @@ describe('Test routes', () => {
 	test('Get Balance - account not found', async () => {
 		const keypair = KeyPair.generate();
 		const response = await request(app).get(`/balance/${keypair.publicAddress}`);
-		expect(response.text).toEqual(JSON.stringify(AccountNotFoundError(keypair.publicAddress)));
+		const data = JSON.parse(response.text);
+		expect(data.http_code).toEqual(404);
+		expect(data.code).toEqual(4041);
+		expect(data.status).toEqual(404);
+		expect(data.title).toEqual('Not Found');
+		expect(data.message).toEqual(`Account '${keypair.publicAddress}' was not found`);
 	}, 120000);
 
 	test('Get Payment - successful', async () => {
