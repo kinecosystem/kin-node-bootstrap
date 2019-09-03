@@ -12,7 +12,6 @@ import {createRequest, createValidator} from "../middlewares/create";
 import {payRequest, payValidator} from "../middlewares/pay";
 import {WhitelistRequest, whitelistValidator} from "../middlewares/whitelist";
 import {logger} from "../app";
-import {generalErrorHandler} from "../middlewares";
 
 const express = require('express');
 /**
