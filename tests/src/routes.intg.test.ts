@@ -1,11 +1,26 @@
 import {createApp} from "../../src/app";
-import {KeyPair, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
+import {Channels, Environment, KeyPair, KinAccount, KinClient, NetworkError} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
-import {AccountNotFoundError, TransactionNotFoundError} from "../../src/errors";
-import {config, MEMO_TEMPLATE, MEMO_CAP, VERSION, INTEGRATION_ENVIRONMENT} from "../environment";
+import {TransactionNotFoundError} from "../../src/errors";
+import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, VERSION} from "../environment";
+import {ConfigParams} from "../../src/config/environment";
 
 const request = require('supertest');
-
+export const config: ConfigParams = {
+	// SEED: process.env.SEED || 'SCOMIY6IHXNIL6ZFTBBYDLU65VONYWI3Y6EN4IDWDP2IIYTCYZBCCE6C',
+	// whitelisted account =>
+	SEED: process.env.SEED || 'SDH76EUIJRM4LARRAOWPBGEAWJMRXFUDCFNBEBMMIO74AWB3MZJYGJ4J',
+	HORIZON_ENDPOINT: Environment.Testnet.url,
+	NETWORK_PASSPHRASE: Environment.Testnet.passphrase,
+	NETWORK_NAME: 'Kin Bootstrap',
+	APP_ID: ANON_APP_ID,
+	CHANNEL_COUNT: 1,
+	CHANNEL_SALT: 'bootstrap',
+	CHANNEL_STARTING_BALANCE: 1000,
+	PORT: 3000,
+	LOGGER: 'INFO',
+	CONSOLE_LOGGER: 'SILLY'
+};
 describe('Test routes', () => {
 	let app: any;
 	let account: KinAccount;
@@ -15,7 +30,7 @@ describe('Test routes', () => {
 	const destination = 'GB26SXD5FXCGHZJKZQARJBYBG43YYSWB6LUBMSQ4JCA3W6QRV7KMBSTE';
 
 	beforeEach(async () => {
-		app = await createApp();
+		app = await createApp(config);
 		account = await getKinAccount(client, config);
 	}, 120000);
 
@@ -42,14 +57,14 @@ describe('Test routes', () => {
 	}, 120000);
 
 	test('Get Balance - account not found', async () => {
-		const keypair = KeyPair.generate();
-		const response = await request(app).get(`/balance/${keypair.publicAddress}`);
+		const keyPair = KeyPair.generate();
+		const response = await request(app).get(`/balance/${keyPair.publicAddress}`);
 		const data = JSON.parse(response.text);
 		expect(data.http_code).toEqual(404);
 		expect(data.code).toEqual(4041);
 		expect(data.status).toEqual(404);
 		expect(data.title).toEqual('Not Found');
-		expect(data.message).toEqual(`Account '${keypair.publicAddress}' was not found`);
+		expect(data.message).toEqual(`Account '${keyPair.publicAddress}' was not found`);
 	}, 120000);
 
 	test('Get Payment - successful', async () => {
@@ -58,7 +73,7 @@ describe('Test routes', () => {
 		const payResponse = await request(app).post('/pay').send({
 			destination: destination,
 			amount: amount,
-			memo: 'pay-successful'
+			memo: memo
 		});
 		const payData = JSON.parse(payResponse.text);
 		const response = await request(app).get(`/payment/${payData.tx_id}`);
@@ -81,7 +96,7 @@ describe('Test routes', () => {
 		const payResponse = await request(app).post('/pay').send({
 			destination: destination,
 			amount: amount,
-			memo: 'pay-successful'
+			memo: memo
 		});
 		const payData = JSON.parse(payResponse.text);
 		const paymentRequest = await request(app).get(`/payment/${payData.tx_id}`);
@@ -91,6 +106,33 @@ describe('Test routes', () => {
 		expect(paymentData.destination).toEqual(destination);
 		expect(paymentData.amount).toEqual(amount);
 		expect(paymentData.memo).toEqual(MEMO_TEMPLATE + memo);
+	}, 120000);
+
+	test('Post Pay - successful with channels', async () => {
+		const environment = new Environment({
+			url: config.HORIZON_ENDPOINT,
+			passphrase: config.NETWORK_PASSPHRASE,
+			name: config.NETWORK_NAME
+		});
+		const keyPairs = await Channels.createChannels({
+			environment: environment,
+			baseSeed: config.SEED,
+			salt: config.CHANNEL_SALT,
+			channelsCount: config.CHANNEL_COUNT,
+			startingBalance: config.CHANNEL_STARTING_BALANCE
+		});
+
+		const amount = 150;
+		const memo = 'pay-successful';
+		const payResponse = await request(app).post('/pay').send({
+			destination: destination,
+			amount: amount,
+			memo: memo
+		});
+		const payData = JSON.parse(payResponse.text);
+		const history = await client.getRawTransactionData(payData.tx_id);
+
+		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
 	}, 120000);
 
 	test('Post Pay - negative minimum amount', async () => {
@@ -169,24 +211,52 @@ describe('Test routes', () => {
 
 	test('Post Create - successful', async () => {
 		const startingBalance = 300;
-		const keypair = KeyPair.generate();
+		const keyPair = KeyPair.generate();
 		await request(app).post('/create').send({
-			destination: keypair.publicAddress,
+			destination: keyPair.publicAddress,
 			starting_balance: startingBalance,
 			memo: 'create-successful'
 		});
 
-		const response = await request(app).get(`/balance/${keypair.publicAddress}`);
+		const response = await request(app).get(`/balance/${keyPair.publicAddress}`);
 		const data = JSON.parse(response.text);
 
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
+	test('Post Create - successful with channels', async () => {
+		const keyPair = KeyPair.generate();
+		const environment = new Environment({
+			url: config.HORIZON_ENDPOINT,
+			passphrase: config.NETWORK_PASSPHRASE,
+			name: config.NETWORK_NAME
+		});
+		const keyPairs = await Channels.createChannels({
+			environment: environment,
+			baseSeed: config.SEED,
+			salt: config.CHANNEL_SALT,
+			channelsCount: config.CHANNEL_COUNT,
+			startingBalance: config.CHANNEL_STARTING_BALANCE
+		});
+
+		const startingBalance = 150;
+		const memo = 'create-successful';
+		const createResponse = await request(app).post('/create').send({
+			destination: keyPair.publicAddress,
+			starting_balance: startingBalance,
+			memo: memo
+		});
+		const createData = JSON.parse(createResponse.text);
+		const history = await client.getRawTransactionData(createData.tx_id);
+
+		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
+	}, 120000);
+
 	test('Post Create - wrong address', async () => {
 		const startingBalance = 300;
-		const keypair = KeyPair.generate();
+		const keyPair = KeyPair.generate();
 		const response = await request(app).post('/create').send({
-			destination: keypair.publicAddress + 'A',
+			destination: keyPair.publicAddress + 'A',
 			starting_balance: startingBalance,
 			memo: 'create-successful'
 		});
@@ -197,13 +267,13 @@ describe('Test routes', () => {
 		expect(data.title).toEqual('Bad Request');
 		expect(data.http_code).toEqual(400);
 		expect(data.status).toEqual(400);
-		expect(data.message).toEqual(`Destination '${keypair.publicAddress + 'A'}' is not a valid public address`);
-	}, 120000)
+		expect(data.message).toEqual(`Destination '${keyPair.publicAddress + 'A'}' is not a valid public address`);
+	}, 120000);
 
 	test('Post Create - negative starting balance', async () => {
-		const keypair = KeyPair.generate();
+		const keyPair = KeyPair.generate();
 		const response = await request(app).post('/create').send({
-			destination: keypair.publicAddress,
+			destination: keyPair.publicAddress,
 			starting_balance: -300,
 			memo: 'create-successful'
 		});
@@ -219,9 +289,9 @@ describe('Test routes', () => {
 
 	test('Post Create - too long memo', async () => {
 		const memo = 'create-failed-due-to-a-very-long-message';
-		const keypair = KeyPair.generate();
+		const keyPair = KeyPair.generate();
 		const response = await request(app).post('/create').send({
-			destination: keypair.publicAddress,
+			destination: keyPair.publicAddress,
 			starting_balance: 300,
 			memo: memo
 		});

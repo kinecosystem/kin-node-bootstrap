@@ -12,7 +12,7 @@ export declare type Create = Request & {
 };
 
 /**
- * Create an account with a public keypair
+ * Create an account with a public keyPair
  * @returns {CreateRes}
  */
 export async function create(client: KinClient, account: KinAccount, params: Create): Promise<CreateRes> {

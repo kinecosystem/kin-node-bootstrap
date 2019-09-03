@@ -1,6 +1,6 @@
 import {getKinAccount, getKinClient} from './init';
 import 'express-async-errors'; // handle async/await errors in middleware
-import {config, MORGAN_LOG_LEVEL} from "./config/environment";
+import {ConfigParams, MORGAN_LOG_LEVEL} from "./config/environment";
 import {fileConf, consoleConf} from "./config/logger";
 import {generalErrorHandler, notFoundHandler} from "./middlewares";
 
@@ -12,7 +12,7 @@ const compression = require('compression');
 const indexRouter = require('./routes/index').indexRouter;
 export let logger: any;
 
-export async function createApp() {
+export async function createApp(config: ConfigParams) {
 	const app = express();
 	const client = getKinClient(config);
 	const account = await getKinAccount(client, config);
