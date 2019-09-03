@@ -18,7 +18,6 @@ export const config: ConfigParams = {
 	CHANNEL_SALT: 'bootstrap',
 	CHANNEL_STARTING_BALANCE: 1000,
 	PORT: 3000,
-	LOGGER: 'INFO',
 	CONSOLE_LOGGER: 'SILLY'
 };
 describe('Test routes', () => {
@@ -205,7 +204,7 @@ describe('Test routes', () => {
 		});
 
 		const data = JSON.parse(response.text);
-		expect(data).toEqual(data);
+		console.log('data', data);
 		expect(data.message).toEqual('The parameter \'amount\' was missing from the requests body');
 	}, 120000);
 

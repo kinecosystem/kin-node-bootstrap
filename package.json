@@ -14,7 +14,6 @@
   "dependencies": {
     "@kinecosystem/kin-sdk-node": "^0.9.4",
     "@types/jest": "^24.0.18",
-    "app-root-path": "^2.2.1",
     "compression": "^1.7.4",
     "config": "^3.2.2",
     "debug": "^2.6.9",
