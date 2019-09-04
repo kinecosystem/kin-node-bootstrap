@@ -246,7 +246,7 @@ describe('Test routes', () => {
 		const createData = JSON.parse(createResponse.text);
 		const history = await client.getRawTransactionData(createData.tx_id);
 
-		console.log('successful with channels');
+		console.log('Create successful with channels');
 		console.log('history.source', history.source);
 		console.log('keyPairs[0].publicAddress.toString()', keyPairs[0].publicAddress.toString());
 		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
