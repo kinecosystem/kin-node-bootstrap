@@ -1,3 +1,4 @@
+import {logger} from "./app";
 
 export type ApiError = {
 	code: number;
@@ -38,6 +39,8 @@ export class KinBootstrapError extends Error {
 		this.title = title;
 		this.status = status;
 		this.message = message;
+
+		logger.error(`client error (4xx). ERROR: ${this.message}. Exit with error code: ${this.code}`);
 	}
 
 	public toJson(): ApiError {
