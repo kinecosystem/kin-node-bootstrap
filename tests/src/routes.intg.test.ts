@@ -193,6 +193,7 @@ describe('Test routes', () => {
 		});
 
 		const data = JSON.parse(response.text);
+		console.log('data', data);
 		expect(data).toEqual(data);
 		expect(data.message).toEqual('The account does not have enough kin to perform this operation');
 	}, 120000);
@@ -204,7 +205,6 @@ describe('Test routes', () => {
 		});
 
 		const data = JSON.parse(response.text);
-		console.log('data', data);
 		expect(data.message).toEqual('The parameter \'amount\' was missing from the requests body');
 	}, 120000);
 
