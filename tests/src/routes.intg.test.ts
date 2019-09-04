@@ -77,6 +77,8 @@ describe('Test routes', () => {
 		const payData = JSON.parse(payResponse.text);
 		const response = await request(app).get(`/payment/${payData.tx_id}`);
 		const data = JSON.parse(response.text);
+		console.log('payment successfule: data', data);
+		console.log('payment successfule: destination', destination);
 		expect(data.source).toEqual('GAJCKSF6YXOS52FIIP5MWQY2NGZLCG6RDEKYACETVRA7XV72QRHUKYBJ');
 		expect(data.destination).toEqual(destination);
 		expect(data.amount).toEqual(amount);
@@ -246,9 +248,6 @@ describe('Test routes', () => {
 		const createData = JSON.parse(createResponse.text);
 		const history = await client.getRawTransactionData(createData.tx_id);
 
-		console.log('Create successful with channels');
-		console.log('history.source === keyPairs[0].publicAddress.toString()', history.source === keyPairs[0].publicAddress.toString());
-		console.log('history.source === keyPairs[1].publicAddress.toString()', history.source === keyPairs[1].publicAddress.toString());
 		expect(history.source === keyPairs[0].publicAddress.toString() || keyPairs[1].publicAddress.toString()).toBeTruthy();
 	}, 120000);
 
