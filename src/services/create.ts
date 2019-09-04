@@ -21,6 +21,7 @@ export async function createAccountService(client: KinClient, account: KinAccoun
 			return await account.submitTransaction(builder);
 		});
 	} catch (e) {
+		console.log("create error ", e);
 		if (e instanceof KinLowBalanceError) {
 			throw LowBalanceError();
 		} else if (e instanceof KinAccountExistsError) {
