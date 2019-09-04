@@ -211,15 +211,17 @@ describe('Test routes', () => {
 	test('Post Create - successful', async () => {
 		const startingBalance = 300;
 		const keyPair = KeyPair.generate();
-		await request(app).post('/create').send({
+		const response = await request(app).post('/create').send({
 			destination: keyPair.publicAddress,
 			starting_balance: startingBalance,
 			memo: 'create-successful'
 		});
 
-		const response = await request(app).get(`/balance/${keyPair.publicAddress}`);
-		const data = JSON.parse(response.text);
-
+		const responseBalance = await request(app).get(`/balance/${keyPair.publicAddress}`);
+		const data = JSON.parse(responseBalance.text);
+		console.log('Post Create');
+		console.log('data', data);
+		console.log('response transaction id', response);
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
