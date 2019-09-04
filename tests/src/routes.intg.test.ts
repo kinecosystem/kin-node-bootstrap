@@ -221,7 +221,8 @@ describe('Test routes', () => {
 		const data = JSON.parse(responseBalance.text);
 		console.log('Post Create');
 		console.log('data', data);
-		console.log('response transaction id', response);
+		console.log('response transaction id', response.text);
+		console.log('keyPair', keyPair.publicAddress);
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
