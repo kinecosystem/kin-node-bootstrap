@@ -16,10 +16,10 @@ export async function payService(client: KinClient, account: KinAccount, params:
 			return await account.submitTransaction(builder);
 		});
 	} catch (e) {
-		console.log('payService error');
-		console.log("KinLowBalanceError", KinLowBalanceError);
-		console.log("e instanceof KinLowBalanceError", e instanceof KinLowBalanceError);
-		console.log("e ", e);
+		// console.log('payService error');
+		// console.log("KinLowBalanceError", KinLowBalanceError);
+		// console.log("e instanceof KinLowBalanceError", e instanceof KinLowBalanceError);
+		// console.log("e ", e);
 		if (e.type === 'ResourceNotFoundError') {
 			throw DestinationDoesNotExistError(params.destination);
 		} else if (e instanceof KinLowBalanceError) {
