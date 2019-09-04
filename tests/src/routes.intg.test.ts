@@ -131,7 +131,7 @@ describe('Test routes', () => {
 		const payData = JSON.parse(payResponse.text);
 		const history = await client.getRawTransactionData(payData.tx_id);
 
-		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
+		expect(history.source === keyPairs[0].publicAddress.toString() || keyPairs[1].publicAddress.toString()).toBeTruthy();
 	}, 120000);
 
 	test('Post Pay - negative minimum amount', async () => {
