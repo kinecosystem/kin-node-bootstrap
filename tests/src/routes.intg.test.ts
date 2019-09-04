@@ -35,11 +35,11 @@ describe('Test routes', () => {
 
 	test('Get status - successful', async () => {
 		const publicAddress = KeyPair.addressFromSeed(config.SEED);
-		const balance = await account.getBalance();
 
 		const response = await request(app).get('/status');
 		const text = JSON.parse(response.text);
 		const data = text;
+		const balance = await account.getBalance();
 
 		expect(data.service_version).toBe(VERSION);
 		expect(data.horizon).toBe(INTEGRATION_ENVIRONMENT.url);
