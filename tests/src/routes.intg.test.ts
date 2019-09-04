@@ -247,8 +247,8 @@ describe('Test routes', () => {
 		const history = await client.getRawTransactionData(createData.tx_id);
 
 		console.log('successful with channels');
-		console.log('keyPairs', keyPairs);
-		console.log('createResponse', createResponse);
+		console.log('history.source', history.source);
+		console.log('keyPairs[0].publicAddress.toString()', keyPairs[0].publicAddress.toString());
 		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
 	}, 120000);
 
