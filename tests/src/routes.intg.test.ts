@@ -1,5 +1,5 @@
 import {createApp} from "../../src/app";
-import {Channels, Environment, KeyPair, KinAccount, KinClient, NetworkError} from "@kinecosystem/kin-sdk-node";
+import {Channels, Environment, KeyPair, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
 import {TransactionNotFoundError} from "../../src/errors";
 import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, VERSION} from "../environment";
@@ -14,7 +14,7 @@ export const config: ConfigParams = {
 	NETWORK_PASSPHRASE: Environment.Testnet.passphrase,
 	NETWORK_NAME: 'Kin Bootstrap',
 	APP_ID: ANON_APP_ID,
-	CHANNEL_COUNT: 1,
+	CHANNEL_COUNT: 2,
 	CHANNEL_SALT: 'bootstrap',
 	CHANNEL_STARTING_BALANCE: 1000,
 	PORT: 3000,
@@ -191,9 +191,7 @@ describe('Test routes', () => {
 			amount: balance * 2,
 			memo: 'pay-successful'
 		});
-
 		const data = JSON.parse(response.text);
-		console.log('data', data);
 		expect(data).toEqual(data);
 		expect(data.message).toEqual('The account does not have enough kin to perform this operation');
 	}, 120000);
@@ -248,6 +246,9 @@ describe('Test routes', () => {
 		const createData = JSON.parse(createResponse.text);
 		const history = await client.getRawTransactionData(createData.tx_id);
 
+		console.log('successful with channels');
+		console.log('keyPairs', keyPairs);
+		console.log('createResponse', createResponse);
 		expect(history.source).toEqual(keyPairs[0].publicAddress.toString());
 	}, 120000);
 
