@@ -77,8 +77,8 @@ describe('Test routes', () => {
 		const payData = JSON.parse(payResponse.text);
 		const response = await request(app).get(`/payment/${payData.tx_id}`);
 		const data = JSON.parse(response.text);
-		console.log('payment successfule: data', data);
-		console.log('payment successfule: destination', destination);
+		// console.log('payment successfule: data', data);
+		// console.log('payment successfule: destination', destination);
 		expect(data.source).toEqual('GAJCKSF6YXOS52FIIP5MWQY2NGZLCG6RDEKYACETVRA7XV72QRHUKYBJ');
 		expect(data.destination).toEqual(destination);
 		expect(data.amount).toEqual(amount);
@@ -194,7 +194,7 @@ describe('Test routes', () => {
 			memo: 'pay-successful'
 		});
 		const data = JSON.parse(response.text);
-		expect(data).toEqual(data);
+		console.log("balance too low", data);
 		expect(data.message).toEqual('The account does not have enough kin to perform this operation');
 	}, 120000);
 
@@ -219,11 +219,11 @@ describe('Test routes', () => {
 
 		const responseBalance = await request(app).get(`/balance/${keyPair.publicAddress}`);
 		const data = JSON.parse(responseBalance.text);
-		console.log('Post Create');
-		console.log('data', data);
-		console.log('balance', data.balance);
-		console.log('response transaction id', response.text);
-		console.log('keyPair', keyPair.publicAddress);
+		// console.log('Post Create');
+		// console.log('data', data);
+		// console.log('balance', data.balance);
+		// console.log('response transaction id', response.text);
+		// console.log('keyPair', keyPair.publicAddress);
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
