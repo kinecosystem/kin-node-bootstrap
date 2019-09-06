@@ -194,7 +194,6 @@ describe('Test routes', () => {
 			memo: 'pay-successful'
 		});
 		const data = JSON.parse(response.text);
-		console.log("balance too low", data);
 		expect(data.message).toEqual('The account does not have enough kin to perform this operation');
 	}, 120000);
 
