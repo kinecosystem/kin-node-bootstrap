@@ -3,6 +3,7 @@ import {Environment, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
 import {ANON_APP_ID, INTEGRATION_ENVIRONMENT} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
+import {MissingParamError} from "../../src/errors";
 
 const request = require('supertest');
 export const config: ConfigParams = {
@@ -70,11 +71,6 @@ describe('Test routes', () => {
 		const response = await request(app).post('/whitelist').send({
 			envelope: envelope
 		});
-		const data = JSON.parse(response.text);
-		expect(data.http_code).toEqual(400);
-		expect(data.code).toEqual(4006);
-		expect(data.title).toEqual('Bad Request');
-		expect(data.status).toEqual(400);
-		expect(data.message).toEqual('The parameter \'network_id\' was missing from the requests body');
+		expect(response.text).toEqual(MissingParamError('The parameter \'network_id\' was missing from the requests body').toString());
 	}, 120000);
 });
