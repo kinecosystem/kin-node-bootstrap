@@ -12,6 +12,9 @@ export const notFoundHandler = function (req: Request, res: Response) {
  * The "next" arg is needed even though it's not used, otherwise express won't understand that it's an error handler
  */
 export function generalErrorHandler(err: any, req: Request, res: Response, next: express.NextFunction) {
+	if (err.errorBody) {
+		err = err.errorBody
+	}
 	if (err.status && err.status < 500) {
 		clientErrorHandler(err, req, res);
 	} else {
