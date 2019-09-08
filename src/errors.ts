@@ -41,8 +41,6 @@ export class KinBootstrapError extends Error {
 		this.title = title;
 		this.status = status;
 		this.message = message;
-
-		logger.error(`client error (4xx). ERROR: ${this.message}. Exit with error code: ${this.code}`);
 	}
 
 	public toJson = (): ApiError => {
@@ -81,7 +79,7 @@ export function InvalidTransactionError() {
 }
 
 export function CantDecodeTransactionError(error: Error) {
-	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received transaction envelope. ERROR: ' + error.message);
+	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received whitelist transaction envelope. ERROR: ' + error.message);
 }
 
 export function DestinationDoesNotExistError(destination: string) {
