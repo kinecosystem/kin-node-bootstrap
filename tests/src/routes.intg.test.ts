@@ -4,7 +4,6 @@ import {getKinAccount} from "../../src/init";
 import {TransactionNotFoundError} from "../../src/errors";
 import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, VERSION} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
-import {Network} from "@kinecosystem/kin-sdk";
 
 const request = require('supertest');
 
@@ -136,7 +135,6 @@ describe('Test routes', () => {
 		});
 		const payData = JSON.parse(payResponse.text);
 		const history = await client.getRawTransactionData(payData.tx_id);
-		console.log('payData', payData);
 		expect(history.source === keyPairs[0].publicAddress.toString() || keyPairs[1].publicAddress.toString()).toBeTruthy();
 	}, 120000);
 
@@ -225,20 +223,20 @@ describe('Test routes', () => {
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
-	// test('Post Create - successful with channels', async () => {
-	// 	const startingBalance = 150;
-	// 	const memo = 'create-successful';
-	// 	const createResponse = await request(app).post('/create').send({
-	// 		destination: keyPair.publicAddress,
-	// 		starting_balance: startingBalance,
-	// 		memo: memo
-	// 	});
-	// 	const createData = JSON.parse(createResponse.text);
-	// 	console.log('createData', createData);
-	// 	const history = await client.getRawTransactionData(createData.tx_id);
-	//
-	// 	expect(history.source === keyPairs[0].publicAddress.toString() || keyPairs[1].publicAddress.toString()).toBeTruthy();
-	// }, 120000);
+	test('Post Create - successful with channels', async () => {
+		const startingBalance = 300;
+		const memo = 'create-successful';
+		const keyPair = KeyPair.generate();
+		const payResponse = await request(app).post('/create').send({
+			destination: keyPair.publicAddress,
+			starting_balance: startingBalance,
+			memo: memo
+		});
+		const payData = JSON.parse(payResponse.text);
+		const history = await client.getRawTransactionData(payData.tx_id);
+		expect(history.source === keyPairs[0].publicAddress.toString() || keyPairs[1].publicAddress.toString()).toBeTruthy();
+		expect(1).toEqual(1);
+	}, 120000);
 
 	test('Post Create - wrong address', async () => {
 		const startingBalance = 300;
