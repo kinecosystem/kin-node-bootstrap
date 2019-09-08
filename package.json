@@ -23,6 +23,7 @@
     "express-logger-unique-req-id": "^1.0.4",
     "express-validator": "^6.1.1",
     "morgan": "^1.9.1",
+    "nock": "^11.3.3",
     "pjson": "^1.0.9",
     "response-time": "^2.3.2",
     "winston": "^3.2.1"

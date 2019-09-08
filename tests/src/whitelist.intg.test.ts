@@ -3,7 +3,7 @@ import {Environment, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
 import {ANON_APP_ID, INTEGRATION_ENVIRONMENT} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
-import {MissingParamError} from "../../src/errors";
+import {CantDecodeTransactionError, MissingParamError} from "../../src/errors";
 
 const request = require('supertest');
 export const config: ConfigParams = {
@@ -18,13 +18,13 @@ export const config: ConfigParams = {
 	PORT: 3000,
 	CONSOLE_LOGGER: 'SILLY'
 };
-describe('Test routes', () => {
+describe('Test Whitelist', () => {
 	let app: any;
 	let account: KinAccount;
 
 	const client = new KinClient(INTEGRATION_ENVIRONMENT);
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		app = await createApp(config);
 		account = await getKinAccount(client, config);
 	}, 120000);
@@ -60,7 +60,7 @@ describe('Test routes', () => {
 		expect(data.code).toEqual(4004);
 		expect(data.title).toEqual('Bad Request');
 		expect(data.status).toEqual(400);
-		expect(data.message).toEqual('The service was unable to decode the received transaction envelope. ERROR: XDR Read Error: Unknown PublicKeyType member for value 67108864');
+		expect(data.message).toEqual('The service was unable to decode the received whitelist transaction envelope. ERROR: XDR Read Error: Unknown PublicKeyType member for value 67108864');
 	}, 120000);
 
 	test('Post Whitelist - network_id does not exist', async () => {
