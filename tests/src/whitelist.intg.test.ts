@@ -1,15 +1,12 @@
 import {createApp} from "../../src/app";
-import {Channels, Environment, KeyPair, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
+import {Environment, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
-import {TransactionNotFoundError} from "../../src/errors";
-import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, VERSION} from "../environment";
+import {ANON_APP_ID, INTEGRATION_ENVIRONMENT} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
 
 const request = require('supertest');
 export const config: ConfigParams = {
-	// SEED: process.env.SEED || 'SCOMIY6IHXNIL6ZFTBBYDLU65VONYWI3Y6EN4IDWDP2IIYTCYZBCCE6C',
-	// whitelisted account =>
-	SEED: process.env.SEED || 'SDH76EUIJRM4LARRAOWPBGEAWJMRXFUDCFNBEBMMIO74AWB3MZJYGJ4J',
+	SEED: 'SDH76EUIJRM4LARRAOWPBGEAWJMRXFUDCFNBEBMMIO74AWB3MZJYGJ4J',
 	HORIZON_ENDPOINT: Environment.Testnet.url,
 	NETWORK_PASSPHRASE: Environment.Testnet.passphrase,
 	NETWORK_NAME: 'Kin Bootstrap',
@@ -25,8 +22,6 @@ describe('Test routes', () => {
 	let account: KinAccount;
 
 	const client = new KinClient(INTEGRATION_ENVIRONMENT);
-	const configKeypair = KeyPair.fromSeed(config.SEED);
-	const destination = 'GB26SXD5FXCGHZJKZQARJBYBG43YYSWB6LUBMSQ4JCA3W6QRV7KMBSTE';
 
 	beforeEach(async () => {
 		app = await createApp(config);

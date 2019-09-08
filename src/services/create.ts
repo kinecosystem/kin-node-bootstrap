@@ -10,7 +10,8 @@ import {DestinationExistsError, LowBalanceError} from "../errors";
 export async function createAccountService(client: KinClient, account: KinAccount, params: Create): Promise<string> {
 	try {
 		const fee = await client.getMinimumFee();
-		return await account.channelsPool!!.acquireChannel(async channel => {
+		const temp = await account.channelsPool!!.acquireChannel(async channel => {
+			console.log('createAccountService', channel);
 			const builder = await account.buildCreateAccount({
 				address: params.destination,
 				startingBalance: params.starting_balance,
@@ -20,8 +21,10 @@ export async function createAccountService(client: KinClient, account: KinAccoun
 			});
 			return await account.submitTransaction(builder);
 		});
+		console.log('acquireChannel', temp);
+		return temp;
 	} catch (e) {
-		console.log("create error ", e);
+		console.log('create account error', e);
 		if (e instanceof KinLowBalanceError) {
 			throw LowBalanceError();
 		} else if (e instanceof KinAccountExistsError) {
