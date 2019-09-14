@@ -2,7 +2,7 @@ import {createApp} from "../../src/app";
 import {Channels, KeyPair, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
 import {AccountNotFoundError, InvalidParamError, MissingParamError, TransactionNotFoundError} from "../../src/errors";
-import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, VERSION} from "../environment";
+import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_CAP, MEMO_TEMPLATE, sleepOnce, VERSION} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
 
 const request = require('supertest');
@@ -26,7 +26,7 @@ const config: ConfigParams = {
 	CONSOLE_LOGGER: 'SILLY'
 };
 
-describe('Test Middleware', () => {
+describe('Test Routes', () => {
 	beforeAll(async () => {
 		await client.friendbot({
 			address: keyPair.publicAddress,
@@ -85,7 +85,7 @@ describe('Test Middleware', () => {
 			memo: memo
 		});
 		const payData = JSON.parse(payResponse.text);
-		const response = await request(app).get(`/payment/${payData.tx_id}`);
+		const response = await sleepOnce(request(app).get, `/payment/${payData.tx_id}`);
 		const data = JSON.parse(response.text);
 		expect(data.source).toEqual(keyPair.publicAddress);
 		expect(data.destination).toEqual(destination);

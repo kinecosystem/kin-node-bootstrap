@@ -2,7 +2,7 @@ import {createApp} from "../../src/app";
 import {Channels, KeyPair, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
 import {getKinAccount} from "../../src/init";
 import {LowBalanceError} from "../../src/errors";
-import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_TEMPLATE} from "../environment";
+import {ANON_APP_ID, INTEGRATION_ENVIRONMENT, MEMO_TEMPLATE, sleepOnce} from "../environment";
 import {ConfigParams} from "../../src/config/environment";
 
 const request = require('supertest');
@@ -61,7 +61,7 @@ describe('Test route pay', () => {
 			memo: memo
 		});
 		const payData = JSON.parse(payResponse.text);
-		const paymentRequest = await request(app).get(`/payment/${payData.tx_id}`);
+		const paymentRequest = await sleepOnce(request(app).get, `/payment/${payData.tx_id}`);
 		const paymentData = JSON.parse(paymentRequest.text);
 
 		expect(paymentData.source).toEqual(source.publicAddress);
@@ -79,9 +79,9 @@ describe('Test route pay', () => {
 			memo: memo
 		});
 		const payData = JSON.parse(payResponse.text);
-		const history = await request(app).get(`/payment/${payData.tx_id}`);
+		const history = await sleepOnce(request(app).get, `/payment/${payData.tx_id}`);
 		if (history && history.text === false)
-		expect(history.source === channelsKeyPair[0].publicAddress.toString() || history.source === channelsKeyPair[1].publicAddress.toString()).toBeTruthy();
+			expect(history.source === channelsKeyPair[0].publicAddress.toString() || history.source === channelsKeyPair[1].publicAddress.toString()).toBeTruthy();
 	}, 120000);
 
 	test('Post Pay - balance too low', async () => {
@@ -142,22 +142,22 @@ describe('Test route create', () => {
 			starting_balance: startingBalance,
 			memo: 'create-successful'
 		});
-		const responseBalance = await request(app).get(`/balance/${keyPair.publicAddress}`);
+		const responseBalance = await sleepOnce(request(app).get, `/balance/${keyPair.publicAddress}`);
 		const data = JSON.parse(responseBalance.text);
 		expect(data.balance).toEqual(startingBalance);
 	}, 120000);
 
 	test('Post Create - successful with channels', async () => {
-		const balance = 200;
+		const balance = 201;
 		const memo = 'create-successful';
 		const keyPair = KeyPair.generate();
-		const response = await request(app).post('/create').send({
+		await request(app).post('/create').send({
 			destination: keyPair.publicAddress,
 			starting_balance: balance,
 			memo: memo
 		});
-		const createData = JSON.parse(response.text);
-		const history = await client.getRawTransactionData(createData.tx_id);
-		expect(history.source === channelsKeyPair[0].publicAddress.toString() || history.source === channelsKeyPair[1].publicAddress.toString()).toBeTruthy();
+		const responseBalance = await sleepOnce(request(app).get, `/balance/${keyPair.publicAddress}`);
+		const data = JSON.parse(responseBalance.text);
+		expect(data.balance).toEqual(balance);
 	}, 120000);
 });
