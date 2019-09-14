@@ -29,3 +29,17 @@ function integEnv(): Environment {
 			name: name ? name : 'BootsrtrapIntegEnv'
 		});
 }
+
+function timeout(ms: any) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const sleepOnce = (fn: any, params: any) => (async () => {
+	const response = await fn(params);
+	if (!response.error) {
+		return response;
+	}
+	await timeout(1000);
+	return await fn(params);
+})();
+
