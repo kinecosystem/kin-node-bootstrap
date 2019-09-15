@@ -1,0 +1,73 @@
+{
+  "name": "kin-node-bootstrap",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prod": "npm-run-all build start",
+    "start": "node lib/server",
+    "start:live": "npm run build:live",
+    "build": "tsc -p ./src",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "build:tests": "tsc -p ./tests",
+    "jest": "jest --forceExit --runInBand --detectOpenHandles --coverage "
+  },
+  "dependencies": {
+    "@kinecosystem/kin-sdk-node": "^0.9.4",
+    "@types/jest": "^24.0.18",
+    "app-root-path": "^2.2.1",
+    "compression": "^1.7.4",
+    "config": "^3.2.2",
+    "debug": "^2.6.9",
+    "dotenv": "^8.0.0",
+    "express": "~4.16.1",
+    "express-async-errors": "^3.1.1",
+    "express-logger-unique-req-id": "^1.0.4",
+    "express-validator": "^6.1.1",
+    "morgan": "^1.9.1",
+    "pjson": "^1.0.9",
+    "response-time": "^2.3.2",
+    "winston": "^3.2.1"
+  },
+  "main": "src/app.ts",
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^24.9.0",
+    "npm-run-all": "^4.1.5",
+    "superagent": "^5.1.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "kin",
+    "node",
+    "blockchain",
+    "cryptocurrency"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/tests/src/**.ts"
+    ],
+    "testPathIgnorePatterns": [
+      ".d.ts"
+    ]
+  }
+}
