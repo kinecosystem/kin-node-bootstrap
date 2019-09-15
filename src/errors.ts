@@ -1,7 +1,10 @@
+import {logger} from "./app";
 
 export type ApiError = {
-	code: number;
 	http_code: number;
+	code: number;
+	title: string;
+	status: number;
 	message: string;
 };
 
@@ -40,15 +43,17 @@ export class KinBootstrapError extends Error {
 		this.message = message;
 	}
 
-	public toJson(): ApiError {
+	public toJson = (): ApiError => {
 		return {
-			code: this.code,
 			http_code: this.http_code,
+			code: this.code,
+			title: this.title,
+			status: this.status,
 			message: this.message
 		};
 	}
 
-	public toString(): string {
+	public toString = (): string => {
 		return JSON.stringify(this.toJson());
 	}
 }
@@ -74,7 +79,7 @@ export function InvalidTransactionError() {
 }
 
 export function CantDecodeTransactionError(error: Error) {
-	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received transaction envelope. ERROR: ' + error.message);
+	return BadRequestError(CODES.BadRequest.InvalidTransactionError, 'The service was unable to decode the received whitelist transaction envelope. ERROR: ' + error.message);
 }
 
 export function DestinationDoesNotExistError(destination: string) {

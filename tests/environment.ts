@@ -8,6 +8,7 @@ export const MEMO_CAP: number = 21;
 export const ANON_APP_ID: string = "anon";
 export const MEMO_TEMPLATE = `1-${ANON_APP_ID}-`;
 
+
 export const INTEGRATION_ENVIRONMENT = integEnv();
 
 function integEnv(): Environment {
@@ -25,6 +26,20 @@ function integEnv(): Environment {
 			url: envUrl ? envUrl : Environment.Testnet.url,
 			passphrase: envPassphrase ? envPassphrase : Environment.Testnet.passphrase,
 			friendbotUrl: envFriendbot ? envFriendbot : Environment.Testnet.friendbotUrl,
-			name: name ? name : 'IntegEnv'
+			name: name ? name : 'BootsrtrapIntegEnv'
 		});
 }
+
+function timeout(ms: any) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const sleepOnce = (fn: any, params: any) => (async () => {
+	const response = await fn(params);
+	if (!response.error) {
+		return response;
+	}
+	await timeout(1000);
+	return await fn(params);
+})();
+
