@@ -34,7 +34,7 @@ function timeout(ms: any) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const sleepOnce = (fn: any, params: any) => (async () => {
+export const sleepOnce = (fn: any, params?: any) => (async () => {
 	const response = await fn(params);
 	if (!response.error) {
 		return response;
