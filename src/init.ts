@@ -1,6 +1,7 @@
 import {Channels, Environment, KinAccount, KinClient} from "@kinecosystem/kin-sdk-node";
+import {ConfigParams} from "./config/environment";
 
-function getNetworkEnv(config: any): Environment {
+function getNetworkEnv(config: ConfigParams): Environment {
 	return new Environment(
 		{
 			url: config.HORIZON_ENDPOINT,
@@ -9,11 +10,11 @@ function getNetworkEnv(config: any): Environment {
 		});
 }
 
-export function getKinClient(config: any): KinClient {
+export function getKinClient(config: ConfigParams): KinClient {
 	return new KinClient(getNetworkEnv(config));
 }
 
-export async function getKinAccount(client: KinClient, config: any): Promise<KinAccount> {
+export async function getKinAccount(client: KinClient, config: ConfigParams): Promise<KinAccount> {
 	const keyPairs = await Channels.createChannels({
 		environment: getNetworkEnv(config),
 		baseSeed: config.SEED,
